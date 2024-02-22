@@ -1,7 +1,7 @@
 import React from "react";
 import ListItem from "./ListItem"; // Assuming ListItem is a presentational component
 
-const InventoryList = ({ supplies, onEdit }) => {
+const InventoryList = ({ supplies, onEdit, onDelete }) => {
   return (
     <div>
       {supplies.length > 0 ? (
@@ -10,6 +10,7 @@ const InventoryList = ({ supplies, onEdit }) => {
             key={supply._id}
             supply={supply}
             onEdit={() => onEdit(supply)}
+            onDelete={() => onDelete(supply)}
           />
         ))
       ) : (

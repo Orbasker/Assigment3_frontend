@@ -32,3 +32,10 @@ export async function updateSupply(name, supply) {
   });
   return await response.json();
 }
+
+export async function deleteSupply(name) {
+  const response = await fetch(`${API_BASE_URL}/${name}`, {
+    method: "DELETE",
+  });
+  return await response.json();
+}
