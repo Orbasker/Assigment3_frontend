@@ -42,23 +42,27 @@ export default function ListInventory() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-left text-blue-600 my-4">
-        Inventory List
-      </h1>
-      <button
-        onClick={() => setSelectedSupply({})}
-        className="mb-4 p-2 bg-blue-500 text-white rounded"
-      >
-        Add Supply
-      </button>
-      <input
-        type="text"
-        placeholder="Search Supplies..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-        className="mb-4 p-2 border rounded"
-      />
+    <div className="">
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold text-left text-blue-600 my-4">
+          Inventory List
+        </h1>
+        <div>
+          <input
+            type="text"
+            placeholder="Search Supplies..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="mb-4 p-2 border rounded"
+          />
+          <button
+            onClick={() => setSelectedSupply({})}
+            className="mb-4 p-2 bg-blue-500 text-white rounded"
+          >
+            Add Supply
+          </button>
+        </div>
+      </div>
       <InventoryList
         supplies={supplies.filter((supply) =>
           supply.name.toLowerCase().includes(searchTerm.toLowerCase()),
