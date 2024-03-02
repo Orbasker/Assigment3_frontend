@@ -1,5 +1,5 @@
 // src/services/InventoryService.js
-const API_BASE_URL = `https://assigment3-frontend.onrender.com/api`; // Adjust this URL to your API's address
+const API_BASE_URL = `https://assigment3-frontend.onrender.com/api`;
 
 export async function getSupplies() {
   const response = await fetch(`${API_BASE_URL}`);
