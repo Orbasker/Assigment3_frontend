@@ -6,7 +6,7 @@ This is an Emergency Supply App built with React and Ant Design/ MUI, allowing u
 
 ## Figma Design:
 
-[Link to Figma design] (https://www.figma.com/file/yz8XU5YUoZrjZwdacOPE32/Assigment-3-FE)
+[Link to Figma design](https://www.figma.com/file/yz8XU5YUoZrjZwdacOPE32/Assigment-3-FE)
 
 ## Prerequisites
 
