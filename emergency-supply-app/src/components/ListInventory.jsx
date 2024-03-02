@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { Typography, TextField, Button, Container, Grid, CircularProgress } from "@mui/material";
+import InventoryList from "./InventoryList";
 import { getSupplies, deleteSupply } from "../InventoryService";
-import InventoryList from "./InventoryList"; // New Component for listing items
-import SupplyForm from "./SupplyForm"; // New Component for add/update form
+import SupplyForm from "./SupplyForm";
 import Modal from "./Modal";
 
 export default function ListInventory() {
   const [supplies, setSupplies] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSupply, setSelectedSupply] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchSupplies = async () => {
     try {
       const response = await getSupplies();
+      if (response.error) {
+        setError(response.error);
+      }
       setSupplies(response?.result || []);
     } catch (error) {
       console.error("Failed to fetch supplies:", error);
+      setError(error.message || "An error occurred while fetching supplies.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -23,56 +32,70 @@ export default function ListInventory() {
   }, []);
 
   const handleSearchChange = (event) => setSearchTerm(event.target.value);
-  const closeModal = () => setSelectedSupply(null);
+  const closeModal = () => {
+    setSelectedSupply(null);
+    setError(null);
+  };
 
   const handleSave = () => {
     closeModal();
     fetchSupplies();
     handleSearchChange({ target: { value: searchTerm } });
-    // fetchSupplies(); // Refetch supplies to update the list after saving
   };
 
   const removeSupply = async (supply) => {
     try {
       await deleteSupply(supply.name);
-      fetchSupplies(); // Refetch supplies to update the list after deleting
+      fetchSupplies();
     } catch (error) {
       console.error("Failed to delete supply:", error);
+      setError(error.message || "An error occurred while deleting the supply.");
     }
   };
 
   return (
-    <div className="">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold text-left text-blue-600 my-4">
+    <Container>
+      <Grid container justifyContent="space-between">
+        <Typography variant="h4" color="primary" gutterBottom>
           Inventory List
-        </h1>
+        </Typography>
         <div>
-          <input
+          <TextField
             type="text"
             placeholder="Search Supplies..."
             value={searchTerm}
             onChange={handleSearchChange}
             className="mb-4 p-2 border rounded"
           />
-          <button
+          <Button
+            variant="contained"
+            color="primary"
             onClick={() => setSelectedSupply({})}
-            className="mb-4 p-2 bg-blue-500 text-white rounded"
+            className="mb-4"
           >
             Add Supply
-          </button>
+          </Button>
         </div>
-      </div>
-      <InventoryList
-        supplies={supplies.filter((supply) =>
-          supply.name.toLowerCase().includes(searchTerm.toLowerCase()),
-        )}
-        onEdit={setSelectedSupply}
-        onDelete={removeSupply}
-      />
+      </Grid>
+      {loading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Typography color="error" variant="body1">
+          {error}
+        </Typography>
+      ) : (
+        <InventoryList
+          supplies={supplies.filter((supply) =>
+            supply.name.toLowerCase().includes(searchTerm.toLowerCase()),
+          )}
+          onEdit={setSelectedSupply}
+          onDelete={removeSupply}
+          fetchSupplies={fetchSupplies}
+        />
+      )}
       <Modal isOpen={selectedSupply !== null} onClose={closeModal}>
         <SupplyForm selectedSupply={selectedSupply} onSave={handleSave} />
       </Modal>
-    </div>
+    </Container>
   );
 }

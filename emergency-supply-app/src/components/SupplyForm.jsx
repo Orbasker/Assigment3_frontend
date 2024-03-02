@@ -7,6 +7,7 @@ const SupplyForm = ({ selectedSupply, onSave }) => {
     price: "",
     quantity: "",
   });
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (selectedSupply) {
@@ -30,19 +31,32 @@ const SupplyForm = ({ selectedSupply, onSave }) => {
     e.preventDefault();
     try {
       if (selectedSupply && selectedSupply._id) {
-        await updateSupply(selectedSupply.name, formData);
+        const res = await updateSupply(selectedSupply.name, formData);
+        if (res.error) {
+          setError(res.error);
+          return;
+        }
       } else {
-        await addSupply(formData);
+        const res = await addSupply(formData);
+        if (res.error) {
+          setError(res.error);
+          return;
+        }
       }
-      onSave(); // Trigger refetch or state update in parent component
+      onSave();
     } catch (error) {
       console.error("Failed to save supply:", error);
+      setError(error.response?.data?.message || "An unexpected error occurred.");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Form fields */}
+      {error && (
+        <div className="mb-4 text-red-600">
+          <p>{error}</p>
+        </div>
+      )}
       <div className="mb-4">
         <label htmlFor="name" className="block text-sm font-bold mb-2">
           Name
